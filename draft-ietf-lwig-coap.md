@@ -52,8 +52,8 @@ normative:
   RFC6633:
   RFC6282:
   RFC7252: coap
-  I-D.ietf-core-observe: observe
-  I-D.ietf-core-block: block
+  RFC7641: observe
+  RFC7959: block
   I-D.bormann-core-cocoa: cocoa
 
 informative:
@@ -61,7 +61,7 @@ informative:
   RFC3542: ipv6api
   I-D.silverajan-core-coap-alternative-transports: alttrans
   I-D.savolainen-core-coap-websockets: websock
-  I-D.tschofenig-core-coap-tcp-tls: coaptcp
+  I-D.ietf-core-coap-tcp-tls: coaptcp
   I-D.becker-core-coap-sms-gprs: coapsms
   TinyOS:
     title: "TinyOS: An Operating System for Sensor Networks"
@@ -199,7 +199,7 @@ HTTP-based applications have established an inverse model because of the
 need for simple push notifications: A constrained client uses POST requests
 to update resources on an unconstrained server whenever an event (e.g., a
 new sensor reading) is triggered. This requirement is solved by the Observe
-option {{I-D.ietf-core-observe}} of CoAP. It allows servers to initiate
+option {{-observe}} of CoAP. It allows servers to initiate
 communication and send push notifications to interested client nodes. This
 allows a more efficient and also more natural model for CoAP-based
 applications, where the information source is an origin server, which can also
@@ -462,7 +462,7 @@ Token is now limited to controlling the Observation relationship.
 A client can use it to cancel the relationship, which frees the Token
 upon success (i.e., the message with an Observe Option with the value set to
 'deregister' (1) is confirmed with a response; see
-{{I-D.ietf-core-observe}} section 3.6). However, the client might never
+{{-observe}} section 3.6). However, the client might never
 receive the response due to a temporary network outage or worse, a server crash.
 Although a network outage will also affect notifications so that the Observe
 garbage collection could apply, the server might simply happen not to send CON
@@ -782,7 +782,7 @@ CoAP's reliable transmissions require the before-mentioned
 retransmission buffers.  Messages, such as the requests of a client,
 should be stored in serialized form.  For servers, retransmissions
 apply for Confirmable separate responses and Confirmable
-notifications {{I-D.ietf-core-observe}}.  As separate responses stem
+notifications {{-observe}}.  As separate responses stem
 from long-lasting resource handlers, the response should be stored
 for retransmission instead of re-dispatching a stored request (which
 would allow for updating the representation).  For Confirmable

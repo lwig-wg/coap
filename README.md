@@ -1,8 +1,8 @@
 # 
 
-This is the working area for the Working Group internet-draft, "".
+This is the working area for the Working Group internet-draft, "CoAP Implementation Guidance".
 
-* [Editor's copy](https://lwig-wg.github.io/coap/)
+* [Editor's copy](https://lwig-wg.github.io/coap/)    [![Build Status](https://travis-ci.org/lwig-wg/coap.svg?branch=master)](https://travis-ci.org/lwig-wg/coap)
 * [Working Group Draft] (https://tools.ietf.org/html/draft-ietf-lwig-coap)
 * [Compare Working Group Draft and Editor's copy] (https://tools.ietf.org/rfcdiff?url1=https://tools.ietf.org/id/draft-ietf-lwig-coap.txt&url2=https://lwig-wg.github.io/coap/draft-ietf-lwig-coap.txt)
 
