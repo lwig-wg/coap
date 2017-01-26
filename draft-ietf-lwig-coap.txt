@@ -804,7 +804,7 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
    CoAP also comes with its own congestion control mechanism, which is
    already designed conservatively.  One advanced mechanism that can be
    employed for better network utilization is CoCoA,
-   [I-D.bormann-core-cocoa].  Time Exceeded messages often occur during
+   [I-D.ietf-core-cocoa].  Time Exceeded messages often occur during
    transient routing loops (unless they are caused by a too small
    initial Hop Limit value).
 
@@ -1222,10 +1222,10 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
    cause for loss are weak links, higher values can be chosen.
 
    Dynamic adjustments will be performed by advanced congestion control
-   mechanisms such as [I-D.bormann-core-cocoa].  They are required if
-   the main cause for message loss is network or endpoint congestion.
-   Semi-dynamic adjustments could be implemented by disseminating new
-   static transmission parameters to all nodes when the network
+   mechanisms such as [I-D.ietf-core-cocoa].  They are required if the
+   main cause for message loss is network or endpoint congestion.  Semi-
+   dynamic adjustments could be implemented by disseminating new static
+   transmission parameters to all nodes when the network configuration
 
 
 
@@ -1234,8 +1234,8 @@ Kovatsch, et al.          Expires July 30, 2017                [Page 22]
 Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
-   configuration changes (e.g., new nodes are added or long-lasting
-   interference is detected).
+   changes (e.g., new nodes are added or long-lasting interference is
+   detected).
 
 4.2.  CoAP over IPv4
 
@@ -1487,10 +1487,10 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 10.1.  Normative References
 
-   [I-D.bormann-core-cocoa]
+   [I-D.ietf-core-cocoa]
               Bormann, C., Betzler, A., Gomez, C., and I. Demirkol,
-              "CoAP Simple Congestion Control/Advanced", draft-bormann-
-              core-cocoa-04 (work in progress), July 2016.
+              "CoAP Simple Congestion Control/Advanced", draft-ietf-
+              core-cocoa-00 (work in progress), October 2016.
 
    [RFC6282]  Hui, J., Ed. and P. Thubert, "Compression Format for IPv6
               Datagrams over IEEE 802.15.4-Based Networks", RFC 6282,
