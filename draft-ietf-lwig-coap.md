@@ -54,7 +54,7 @@ normative:
   RFC7252: coap
   RFC7641: observe
   RFC7959: block
-  I-D.bormann-core-cocoa: cocoa
+  I-D.ietf-core-cocoa: cocoa
 
 informative:
   RFC7228: terminology
@@ -660,7 +660,7 @@ to inform the sender to reduce the
 rate of packets. However, this mechanism is deprecated through {{RFC6633}}.
 CoAP also comes with its own congestion control mechanism, which is already
 designed conservatively. One advanced mechanism that can be employed for better
-network utilization is CoCoA, {{I-D.bormann-core-cocoa}}. Time
+network utilization is CoCoA, {{-cocoa}}. Time
 Exceeded messages often occur during transient routing loops (unless
 they are caused by a too small initial
 Hop Limit value).
@@ -1011,7 +1011,7 @@ PROBING_RATE depend on estimated network utilization. If the main cause for
 loss are weak links, higher values can be chosen.
 
 Dynamic adjustments will be performed by advanced congestion control mechanisms
-such as {{I-D.bormann-core-cocoa}}. They are required if the main cause for
+such as {{-cocoa}}. They are required if the main cause for
 message loss is network or endpoint congestion. Semi-dynamic adjustments
 could be implemented by disseminating new static transmission parameters to
 all nodes when the network configuration changes (e.g., new nodes are added
