@@ -1081,6 +1081,17 @@ send a packet that is initiating an exchange.  (Choosing that
 interface is too application-specific to be in scope for the present
 document.)
 
+### Handling ICMP errors
+
+Sockets that use the connect and send functions usually receive ICMP errors in
+the form of error codes, sockets that use sendto or sendmsg do not receive them
+at all.
+
+Neither is sufficient to implement the guidance in {{out-of-band-information}},
+as the vetting of the message requires access to the CoAP headers in the ICMP
+error. The necessary information can be obtained by using the IPV6\_RECVERR
+option.
+
 ## Java
 
 Java provides a wildcard address (0.0.0.0) to bind a socket to all network interface.
