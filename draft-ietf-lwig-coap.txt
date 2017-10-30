@@ -5,9 +5,9 @@
 LWIG Working Group                                           M. Kovatsch
 Internet-Draft                                                ETH Zurich
 Intended status: Informational                               O. Bergmann
-Expires: July 30, 2017                                   C. Bormann, Ed.
+Expires: May 3, 2018                                     C. Bormann, Ed.
                                                  Universitaet Bremen TZI
-                                                        January 26, 2017
+                                                        October 30, 2017
 
 
                       CoAP Implementation Guidance
@@ -33,14 +33,14 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 30, 2017.
+   This Internet-Draft will expire on May 3, 2018.
 
 Copyright Notice
 
@@ -49,13 +49,13 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 1]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 1]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    publication of this document.  Please review these documents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 2]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 2]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
      6.2.  Translating between transports  . . . . . . . . . . . . .  26
@@ -165,9 +165,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 3]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 3]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    The present document gives possible strategies to solve this tradeoff
@@ -221,9 +221,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 4]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 4]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    model for CoAP-based applications, where the information source is an
@@ -277,9 +277,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 5]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 5]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    accordingly.  Note that full processing must only be done up to the
@@ -333,9 +333,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 6]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 6]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 2.3.1.  Duplicate Rejection
@@ -389,9 +389,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 7]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 7]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
                     Client              Server
@@ -445,9 +445,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 8]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 8]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 2.3.4.  Relaxation on the Client
@@ -501,9 +501,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                 [Page 9]
+Kovatsch, et al.           Expires May 3, 2018                  [Page 9]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    what they receive from the clients.  Tokens must be unique within the
@@ -557,9 +557,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 10]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 10]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    When the client wishes to reinforce its interest in a resource, maybe
@@ -613,9 +613,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 11]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 11]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    through the other layer (e.g., whether a request was sent using a CON
@@ -669,9 +669,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 12]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 12]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
         +--------+ <----------RR_EVT(rx)[is NON]---------- +------+
@@ -725,9 +725,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 13]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 13]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    +-----------+ <-------M_CMD(reliable_send)-----+
@@ -781,9 +781,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 14]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 14]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    The most important ICMP messages are host, network, port, or protocol
@@ -837,9 +837,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 15]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 15]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    operation in the response handlers.  Furthermore, as mentioned in
@@ -893,9 +893,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 16]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 16]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 3.  Optimizations
@@ -949,9 +949,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 17]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 17]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    notifications, please see Section 2.6, as simply storing the response
@@ -1005,9 +1005,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 18]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 18]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 3.4.  Blockwise Transfers
@@ -1061,9 +1061,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 19]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 19]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    o  one client makes periodic requests to a large number of CoAP
@@ -1117,9 +1117,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 20]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 20]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    Finally, some peers might use a randomly generated MID values
@@ -1173,9 +1173,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 21]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 21]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    these optimizations would benefit if the peer were much more
@@ -1229,9 +1229,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 22]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 22]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    changes (e.g., new nodes are added or long-lasting interference is
@@ -1285,9 +1285,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 23]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 23]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    information about the destination address; replying to it through the
@@ -1341,9 +1341,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 24]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 24]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    is common to have multiple IP addresses per network interface.  Thus,
@@ -1397,9 +1397,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 25]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 25]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 6.1.  CoAP over reliable transports
@@ -1453,9 +1453,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 26]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 26]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 6.2.2.  One-to-one Transport translation
@@ -1509,9 +1509,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 27]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 27]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    [RFC6570]  Gregorio, J., Fielding, R., Hadley, M., Nottingham, M.,
@@ -1565,9 +1565,9 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 28]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 28]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    [I-D.savolainen-core-coap-websockets]
@@ -1621,9 +1621,9 @@ Authors' Addresses
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 29]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 29]
 
-Internet-Draft        CoAP Implementation Guidance          January 2017
+Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    Olaf Bergmann
@@ -1677,4 +1677,4 @@ Internet-Draft        CoAP Implementation Guidance          January 2017
 
 
 
-Kovatsch, et al.          Expires July 30, 2017                [Page 30]
+Kovatsch, et al.           Expires May 3, 2018                 [Page 30]
