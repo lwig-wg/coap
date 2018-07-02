@@ -303,6 +303,8 @@ address {
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 Retransmissions">
 <link href="#rfc.section.3.3" rel="Chapter" title="3.3 Observable Resources">
 <link href="#rfc.section.3.4" rel="Chapter" title="3.4 Blockwise Transfers">
+<link href="#rfc.section.3.4.1" rel="Chapter" title="3.4.1 Generic Proxying of Block Messages">
+<link href="#rfc.section.3.4.2" rel="Chapter" title="3.4.2 Atomic Blockwise Operations">
 <link href="#rfc.section.3.5" rel="Chapter" title="3.5 Deduplication with Sequential MIDs">
 <link href="#rfc.section.4" rel="Chapter" title="4 Alternative Configurations">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Transmission Parameters">
@@ -328,12 +330,12 @@ address {
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.9.9 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Kovatsch, M., Bergmann, O., and C. Bormann, Ed." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-lwig-coap-latest" />
-  <meta name="dct.issued" scheme="ISO8601" content="2017-10-30" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-07-02" />
   <meta name="dct.abstract" content="The Constrained Application Protocol (CoAP) is designed for resource-constrained nodes and networks such as sensor nodes in a low-power lossy network (LLN). Yet to implement this Internet protocol on Class 1 devices (as per RFC 7228, ~&#160;10&#160;KiB of RAM and ~&#160;100&#160;KiB of ROM) also lightweight implementation techniques are necessary. This document provides lessons learned from implementing CoAP for tiny, battery-operated networked embedded systems. In particular, it provides guidance on correct implementation of the CoAP specification RFC 7252, memory optimizations, and customized protocol parameters." />
   <meta name="description" content="The Constrained Application Protocol (CoAP) is designed for resource-constrained nodes and networks such as sensor nodes in a low-power lossy network (LLN). Yet to implement this Internet protocol on Class 1 devices (as per RFC 7228, ~&#160;10&#160;KiB of RAM and ~&#160;100&#160;KiB of ROM) also lightweight implementation techniques are necessary. This document provides lessons learned from implementing CoAP for tiny, battery-operated networked embedded systems. In particular, it provides guidance on correct implementation of the CoAP specification RFC 7252, memory optimizations, and customized protocol parameters." />
 
@@ -357,7 +359,7 @@ address {
 <td class="right">O. Bergmann</td>
 </tr>
 <tr>
-<td class="left">Expires: May 3, 2018</td>
+<td class="left">Expires: January 3, 2019</td>
 <td class="right">C. Bormann, Ed.</td>
 </tr>
 <tr>
@@ -366,7 +368,7 @@ address {
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">October 30, 2017</td>
+<td class="right">July 02, 2018</td>
 </tr>
 
     	
@@ -382,9 +384,9 @@ address {
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on May 3, 2018.</p>
+<p>This Internet-Draft will expire on January 3, 2019.</p>
 <h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
-<p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>Copyright (c) 2018 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
 
   
@@ -444,7 +446,11 @@ address {
 </li>
 <li>3.4.   <a href="#rfc.section.3.4">Blockwise Transfers</a>
 </li>
-<li>3.5.   <a href="#rfc.section.3.5">Deduplication with Sequential MIDs</a>
+<ul><li>3.4.1.   <a href="#rfc.section.3.4.1">Generic Proxying of Block Messages</a>
+</li>
+<li>3.4.2.   <a href="#rfc.section.3.4.2">Atomic Blockwise Operations</a>
+</li>
+</ul><li>3.5.   <a href="#rfc.section.3.5">Deduplication with Sequential MIDs</a>
 </li>
 </ul><li>4.   <a href="#rfc.section.4">Alternative Configurations</a>
 </li>
@@ -499,7 +505,7 @@ address {
 </h1>
 <p id="rfc.section.1.p.1">The Constrained Application Protocol <a href="#RFC7252" class="xref">[RFC7252]</a> has been designed specifically for machine-to-machine communication in networks with very constrained nodes.  Typical application scenarios therefore include building automation, process optimization, and the Internet of Things. The major design objectives have been set on small protocol overhead, robustness against packet loss, and against high latency induced by small bandwidth shares or slow request processing in end nodes.  To leverage integration of constrained nodes with the world-wide Internet, the protocol design was led by the REST architectural style that accounts for the scalability and robustness of the Hypertext Transfer Protocol <a href="#RFC7230" class="xref">[RFC7230]</a>.</p>
 <p id="rfc.section.1.p.2">Lightweight implementations benefit from this design in many respects: First, the use of Uniform Resource Identifiers (URIs) for naming resources and the transparent forwarding of their representations in a server-stateless request/response protocol make protocol translation to HTTP a straightforward task.  Second, the set of protocol elements that are unavoidable for the core protocol, and thus must be implemented on every node, has been kept very small, minimizing the unnecessary accumulation of &#8220;optional&#8221; features.  Options that &#8211; when present &#8211; are critical for message processing are explicitly marked as such to force immediate rejection of messages with unknown critical options.  Third, the syntax of protocol data units is easy to parse and is carefully defined to avoid creation of state in servers where possible.</p>
-<p id="rfc.section.1.p.3">Although these features enable lightweight implementations of the Constrained Application Protocol, there is still a tradeoff between robustness and latency of constrained nodes on one hand and resource demands on the other.  For constrained nodes of Class&#160;1 or even Class&#160;2 <a href="#RFC7228" class="xref">[RFC7228]</a>, the most limiting factors usually are dynamic memory needs, static code size, and energy.  Most implementations therefore need to optimize internal buffer usage, omit idle protocol feature, and maximize sleeping cycles.</p>
+<p id="rfc.section.1.p.3">Although these features enable lightweight implementations of the Constrained Application Protocol, there is still a tradeoff between robustness and latency of constrained nodes on one hand and resource demands on the other.  For constrained nodes of Class&#160;1 or even Class&#160;2 <a href="#RFC7228" class="xref">[RFC7228]</a>, the most limiting factors usually are dynamic memory needs, static code size, and energy.  Most implementations therefore need to optimize internal buffer usage, omit idle protocol features, and maximize sleeping cycles.</p>
 <p id="rfc.section.1.p.4">The present document gives possible strategies to solve this tradeoff for very constrained nodes (i.e., Class 1).  For this, it provides guidance on correct implementation of the CoAP specification <a href="#RFC7252" class="xref">[RFC7252]</a>, memory optimizations, and customized protocol parameters.</p>
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#protocol-implementation" id="protocol-implementation">Protocol Implementation</a>
@@ -509,11 +515,14 @@ address {
 <a href="#rfc.section.2.1">2.1.</a> <a href="#client-server" id="client-server">Client/Server Model</a>
 </h1>
 <p id="rfc.section.2.1.p.1">In general, CoAP servers can be implemented more efficiently than clients.  REST allows them to keep the communication stateless and piggy-backed responses are not stored for retransmission, saving buffer space.  The use of idempotent requests also allows to relax deduplication, which further decreases memory usage.  It is also easy to estimate the required maximum size of message buffers, since URI paths, supported options, and maximum payload sizes of the application are known at compile time. Hence, when the application is distributed over constrained and unconstrained nodes, the constrained ones should preferably have the server role.</p>
-<p id="rfc.section.2.1.p.2">HTTP-based applications have established an inverse model because of the need for simple push notifications: A constrained client uses POST requests to update resources on an unconstrained server whenever an event (e.g., a new sensor reading) is triggered. This requirement is solved by the Observe option <a href="#RFC7641" class="xref">[RFC7641]</a> of CoAP. It allows servers to initiate communication and send push notifications to interested client nodes. This allows a more efficient and also more natural model for CoAP-based applications, where the information source is an origin server, which can also benefit from caching.</p>
+<p id="rfc.section.2.1.p.2">HTTP-based applications have established an inverse model because of the need for simple push notifications: A constrained client uses POST requests to update resources on an unconstrained server whenever an event (e.g., a new sensor reading) is triggered. This requirement is solved by the Observe option <a href="#RFC7641" class="xref">[RFC7641]</a> of CoAP. It allows servers to initiate communication and send push notifications to interested client nodes. This allows a more efficient and also more natural model for CoAP-based applications, where the information source is an origin server, which can also benefit from caching. Publish-subscribe brokers <a href="#I-D.ietf-core-coap-pubsub" class="xref">[I-D.ietf-core-coap-pubsub]</a> may be deployed to act in the server role on behalf of constrained clients.</p>
 <h1 id="rfc.section.2.2">
 <a href="#rfc.section.2.2">2.2.</a> <a href="#message-processing" id="message-processing">Message Processing</a>
 </h1>
-<p id="rfc.section.2.2.p.1">Apart from the required buffers, message processing is symmetric for clients and servers. First the 4-byte base header has to be parsed and thereby checked if it is a CoAP message. Since the encoding is very dense, only a wrong version or a datagram size smaller than four bytes identify non-CoAP datagrams. These need to be silently ignored. Other message format errors, such as an incomplete datagram or the usage of reserved values, may need to be rejected with a Reset (RST) message (see Section 4.2 and 4.3 of <a href="#RFC7252" class="xref">[RFC7252]</a> for details).  Next the Token is read based on the TKL field. For the options following, there are two alternatives: either process them on the fly when an option is accessed or initially parse all values into an internal data structure.</p>
+<p id="rfc.section.2.2.p.1">Apart from the required buffers, message processing is symmetric for clients and servers. First the base header has to be parsed and thereby checked if it is a valid CoAP message. For UDP datagrams, the version identifier or a size smaller than four bytes identify non-CoAP data. These datagrams need to be silently ignored. Other message format errors, such as an incomplete datagram or the usage of reserved values, may need to be rejected with a Reset (RST) message (see Section 4.2 and 4.3 of <a href="#RFC7252" class="xref">[RFC7252]</a> for details).</p>
+<p id="rfc.section.2.2.p.2">As CoAP over TCP has a different base header, the Length field must be parsed to determine the message size. As this field may have up to five bytes, it may be extend over TCP segment boundaries. For CoAP over WebSockets the actual message length is given by the WebSocket frame hence the Length field is always zero.</p>
+<p id="rfc.section.2.2.p.3">Next, the token length is read based on the TKL field which is for all transports contained in the four least significant bits of the first byte. The (possibly empty) Token itself is located immediately after the four-byte base header for UDP, while for TCP and WebSockets, it follows the variable Length field and Code byte.</p>
+<p id="rfc.section.2.2.p.4">For the options following the Token, there are two alternatives: either process them on the fly when an option is accessed or initially parse all values into an internal data structure.</p>
 <h1 id="rfc.section.2.2.1">
 <a href="#rfc.section.2.2.1">2.2.1.</a> <a href="#on-the-fly-processing" id="on-the-fly-processing">On-the-fly Processing</a>
 </h1>
@@ -524,7 +533,7 @@ address {
 <a href="#rfc.section.2.2.2">2.2.2.</a> <a href="#internal-data-structure" id="internal-data-structure">Internal Data Structure</a>
 </h1>
 <p id="rfc.section.2.2.2.p.1">Using an internal data structure for all parsed options has an advantage when working on the option values, as they are already in a variable of corresponding type (e.g., an integer in host byte order). The incoming payload and byte strings of the header can be accessed directly in the buffer for incoming messages using pointers (similar to on-the-fly processing). This approach also benefits from a bitmap. Otherwise special values must be reserved to encode an unset option, which might require a larger type than required for the actual value range (e.g., a 32-bit integer instead of 16-bit).</p>
-<p id="rfc.section.2.2.2.p.2">Many of the byte strings (e.g., the URI) are usually not required when generating the response. When all important values are copied (e.g., the Token, which needs to be mirrored), the internal data structure facilitates using the buffer for incoming messages also for the assembly of outgoing messages &#8211; which can be the shared IP buffer provided by the OS.</p>
+<p id="rfc.section.2.2.2.p.2">Many of the byte strings (e.g., the URI) are usually not required when generating the response. When all important values are copied (e.g., the Token, which needs to be mirrored), the internal data structure facilitates using the buffer for incoming messages also for the assembly of outgoing messages &#8211; which can be the shared IP buffer provided by the operating system.</p>
 <p id="rfc.section.2.2.2.p.3">Setting options for outgoing messages is also easier with an internal data structure. Application developers can set options independent from the option number and do not need to care about the order for the delta encoding. The CoAP encoding is applied in a serialization step before sending. In contrast, assembling outgoing messages with on-the-fly processing requires either extensive memmove operations to insert new options, or restrictions for developers to set options in their correct order.</p>
 <h1 id="rfc.section.2.3">
 <a href="#rfc.section.2.3">2.3.</a> <a href="#message-id-usage" id="message-id-usage">Message ID Usage</a>
@@ -771,6 +780,27 @@ not filtered through X&lt;-----------------+ Retransmission
 <p id="rfc.section.3.4.p.1">Blockwise transfers have the main purpose of providing fragmentation at the application layer, where partial information can be processed.  This is not possible at lower layers such as 6LoWPAN, as only assembled packets can be passed up the stack.  While <a href="#RFC7959" class="xref">[RFC7959]</a> also anticipates atomic handling of blocks, i.e., only fully received CoAP messages, this is not possible on Class 1 devices.</p>
 <p id="rfc.section.3.4.p.2">When receiving a blockwise transfer, each block is usually passed to a handler function that for instance performs stream processing or writes the blocks to external memory such as flash.  Although there are no restrictions in <a href="#RFC7959" class="xref">[RFC7959]</a>, it is beneficial for Class 1 devices to only allow ordered transmission of blocks.  Otherwise on-the-fly processing would not be possible.</p>
 <p id="rfc.section.3.4.p.3">When sending a blockwise transfer out of dynamically generated information, Class 1 devices usually do not have sufficient memory to print the full message into a buffer, and slice and send it in a second step.  For instance, if the CoRE Link Format at /.well-known/core is dynamically generated, a generator function is required that generates slices of a large string with a specific offset length (a &#8216;sonprintf()&#8217;).  This functionality is required recurrently and should be included in a library.</p>
+<h1 id="rfc.section.3.4.1">
+<a href="#rfc.section.3.4.1">3.4.1.</a> <a href="#block-proxying" id="block-proxying">Generic Proxying of Block Messages</a>
+</h1>
+<p id="rfc.section.3.4.1.p.1">Proxies cannot ignore the Block options by specification, because the options Block1 and Block2 are not safe-to-forward. The rationale behind this design decision is that servers might not be able to distinguish blocks originating from different senders once they have been forwarded by a CoAP proxy. For atomic operations where all blocks are assembled before actually executing the desired operation, this could lead to inconsistent state on the server side.</p>
+<p id="rfc.section.3.4.1.p.2">To ensure that this does not happen, a proxy can add the Request-Tag option (see <a href="#I-D.ietf-core-echo-request-tag" class="xref">[I-D.ietf-core-echo-request-tag]</a>) containing data that uniquely identifies the originating endpoint in the proxy namespace.</p>
+<h1 id="rfc.section.3.4.2">
+<a href="#rfc.section.3.4.2">3.4.2.</a> <a href="#atomic-blockwise-operations" id="atomic-blockwise-operations">Atomic Blockwise Operations</a>
+</h1>
+<p id="rfc.section.3.4.2.p.1">When an implementation needs to assemble blocks from block-wise transfers, applications need to create an identifier to group messages that belong together. This &#8220;Block Key&#8221; at least contains:</p>
+<p></p>
+
+<ul>
+<li>The source endpoint (e.g., IP address and port in the UDP case),</li>
+<li>the destination endpoint,</li>
+<li>the Cache-Key (as updated in <a href="#RFC7252" class="xref">[RFC7252]</a>), and</li>
+<li>all options that are proxy unsafe and not explicitly described as safe for block-wise assembly.</li>
+</ul>
+<p id="rfc.section.3.4.2.p.3">The only known options safe for block-wise assembly are the options Block1 and Block2 <a href="#RFC7959" class="xref">[RFC7959]</a>.</p>
+<p id="rfc.section.3.4.2.p.4">For the Block1 phase, the request payload is excluded from the identifier generation as it is just being assembled.</p>
+<p id="rfc.section.3.4.2.p.5">If a message is received that is not the start of a block-wise operation has a Block Key that is not known, and the implementation needs to act atomically on a request body, it must answer 4.08 (Request Entity Incomplete).</p>
+<p id="rfc.section.3.4.2.p.6">Conversely, clients should be aware that requests whose Block Key matches can be interpreted by the server atomically. This especially affects proxies (see <a href="#block-proxying" class="xref">Section 3.4.1</a>).</p>
 <h1 id="rfc.section.3.5">
 <a href="#rfc.section.3.5">3.5.</a> <a href="#deduplication-with-sequential-mids" id="deduplication-with-sequential-mids">Deduplication with Sequential MIDs</a>
 </h1>
@@ -879,7 +909,7 @@ not filtered through X&lt;-----------------+ Retransmission
 <a href="#rfc.section.6">6.</a> <a href="#coap-on-various-transports" id="coap-on-various-transports">CoAP on various transports</a>
 </h1>
 <p id="rfc.section.6.p.1">As specified in <a href="#RFC7252" class="xref">[RFC7252]</a>, CoAP is defined for two underlying transports: UDP and DTLS.  These transports are relatively similar in terms of the properties they expose to their users.  (The main difference, apart from the increased security, is that DTLS provides an abstraction of a connection, into which the endpoint abstraction is placed; in contrast, the UDP endpoint abstraction is based on four-tuples of IP addresses and ports.)</p>
-<p id="rfc.section.6.p.2">Recently, the need to carry CoAP over other transports <a href="#I-D.silverajan-core-coap-alternative-transports" class="xref">[I-D.silverajan-core-coap-alternative-transports]</a> has led to specifications such as CoAP over TLS or TCP <a href="#I-D.ietf-core-coap-tcp-tls" class="xref">[I-D.ietf-core-coap-tcp-tls]</a> or websockets <a href="#I-D.savolainen-core-coap-websockets" class="xref">[I-D.savolainen-core-coap-websockets]</a>, or even over non-IP transports such as SMS <a href="#I-D.becker-core-coap-sms-gprs" class="xref">[I-D.becker-core-coap-sms-gprs]</a>.  This section discusses considerations that arise when handling these different transports in an implementation.</p>
+<p id="rfc.section.6.p.2">Recently, the need to carry CoAP over other transports <a href="#I-D.silverajan-core-coap-alternative-transports" class="xref">[I-D.silverajan-core-coap-alternative-transports]</a> has led to specifications such as CoAP over TLS or TCP or WebSockets<a href="#RFC8323" class="xref">[RFC8323]</a>, or even over non-IP transports such as SMS <a href="#I-D.becker-core-coap-sms-gprs" class="xref">[I-D.becker-core-coap-sms-gprs]</a>.  This section discusses considerations that arise when handling these different transports in an implementation.</p>
 <h1 id="rfc.section.6.1">
 <a href="#rfc.section.6.1">6.1.</a> <a href="#coap-over-reliable-transports" id="coap-over-reliable-transports">CoAP over reliable transports</a>
 </h1>
@@ -912,7 +942,7 @@ not filtered through X&lt;-----------------+ Retransmission
 <h1 id="rfc.section.9">
 <a href="#rfc.section.9">9.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
 </h1>
-<p id="rfc.section.9.p.1">Esko Dijk contributed the sequential MID optimization. Xuan He provided help creating and improved the state machine charts.</p>
+<p id="rfc.section.9.p.1">Esko Dijk contributed the sequential MID optimization. Xuan He provided help creating and improved the state machine charts. Christian Ams&#252;ss provided input on forwarding block messages by proxies and usage of the Request-Tag option.</p>
 <h1 id="rfc.references">
 <a href="#rfc.references">10.</a> References</h1>
 <h1 id="rfc.references.1">
@@ -921,7 +951,7 @@ not filtered through X&lt;-----------------+ Retransmission
 <tr>
 <td class="reference"><b id="I-D.ietf-core-cocoa">[I-D.ietf-core-cocoa]</b></td>
 <td class="top">
-<a>Bormann, C.</a>, <a>Betzler, A.</a>, <a>Gomez, C.</a> and <a>I. Demirkol</a>, "<a href="https://tools.ietf.org/html/draft-ietf-core-cocoa-01">CoAP Simple Congestion Control/Advanced</a>", Internet-Draft draft-ietf-core-cocoa-01, March 2017.</td>
+<a>Bormann, C.</a>, <a>Betzler, A.</a>, <a>Gomez, C.</a> and <a>I. Demirkol</a>, "<a href="https://tools.ietf.org/html/draft-ietf-core-cocoa-03">CoAP Simple Congestion Control/Advanced</a>", Internet-Draft draft-ietf-core-cocoa-03, February 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC6282">[RFC6282]</b></td>
@@ -973,19 +1003,19 @@ not filtered through X&lt;-----------------+ Retransmission
 <a>Kuladinithi, K.</a>, <a>Becker, M.</a>, <a>Li, K.</a> and <a>T. Poetsch</a>, "<a href="https://tools.ietf.org/html/draft-becker-core-coap-sms-gprs-06">Transport of CoAP over SMS</a>", Internet-Draft draft-becker-core-coap-sms-gprs-06, February 2017.</td>
 </tr>
 <tr>
-<td class="reference"><b id="I-D.ietf-core-coap-tcp-tls">[I-D.ietf-core-coap-tcp-tls]</b></td>
+<td class="reference"><b id="I-D.ietf-core-coap-pubsub">[I-D.ietf-core-coap-pubsub]</b></td>
 <td class="top">
-<a>Bormann, C.</a>, <a>Lemay, S.</a>, <a>Tschofenig, H.</a>, <a>Hartke, K.</a>, <a>Silverajan, B.</a> and <a>B. Raymor</a>, "<a href="https://tools.ietf.org/html/draft-ietf-core-coap-tcp-tls-09">CoAP (Constrained Application Protocol) over TCP, TLS, and WebSockets</a>", Internet-Draft draft-ietf-core-coap-tcp-tls-09, May 2017.</td>
+<a>Koster, M.</a>, <a>Keranen, A.</a> and <a>J. Jimenez</a>, "<a href="https://tools.ietf.org/html/draft-ietf-core-coap-pubsub-04">Publish-Subscribe Broker for the Constrained Application Protocol (CoAP)</a>", Internet-Draft draft-ietf-core-coap-pubsub-04, March 2018.</td>
 </tr>
 <tr>
-<td class="reference"><b id="I-D.savolainen-core-coap-websockets">[I-D.savolainen-core-coap-websockets]</b></td>
+<td class="reference"><b id="I-D.ietf-core-echo-request-tag">[I-D.ietf-core-echo-request-tag]</b></td>
 <td class="top">
-<a>Savolainen, T.</a>, <a>Hartke, K.</a> and <a>B. Silverajan</a>, "<a href="https://tools.ietf.org/html/draft-savolainen-core-coap-websockets-07">CoAP over WebSockets</a>", Internet-Draft draft-savolainen-core-coap-websockets-07, June 2016.</td>
+<a>Amsuess, C.</a>, <a>Mattsson, J.</a> and <a>G. Selander</a>, "<a href="https://tools.ietf.org/html/draft-ietf-core-echo-request-tag-02">Echo and Request-Tag</a>", Internet-Draft draft-ietf-core-echo-request-tag-02, June 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="I-D.silverajan-core-coap-alternative-transports">[I-D.silverajan-core-coap-alternative-transports]</b></td>
 <td class="top">
-<a>Silverajan, B.</a> and <a>T. Savolainen</a>, "<a href="https://tools.ietf.org/html/draft-silverajan-core-coap-alternative-transports-10">CoAP Communication with Alternative Transports</a>", Internet-Draft draft-silverajan-core-coap-alternative-transports-10, July 2017.</td>
+<a>Silverajan, B.</a> and <a>T. Savolainen</a>, "<a href="https://tools.ietf.org/html/draft-silverajan-core-coap-alternative-transports-11">CoAP Communication with Alternative Transports</a>", Internet-Draft draft-silverajan-core-coap-alternative-transports-11, March 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC3542">[RFC3542]</b></td>
@@ -1001,6 +1031,11 @@ not filtered through X&lt;-----------------+ Retransmission
 <td class="reference"><b id="RFC7228">[RFC7228]</b></td>
 <td class="top">
 <a>Bormann, C.</a>, <a>Ersue, M.</a> and <a>A. Keranen</a>, "<a href="https://tools.ietf.org/html/rfc7228">Terminology for Constrained-Node Networks</a>", RFC 7228, DOI 10.17487/RFC7228, May 2014.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC8323">[RFC8323]</b></td>
+<td class="top">
+<a>Bormann, C.</a>, <a>Lemay, S.</a>, <a>Tschofenig, H.</a>, <a>Hartke, K.</a>, <a>Silverajan, B.</a> and <a>B. Raymor</a>, "<a href="https://tools.ietf.org/html/rfc8323">CoAP (Constrained Application Protocol) over TCP, TLS, and WebSockets</a>", RFC 8323, DOI 10.17487/RFC8323, February 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="TinyOS">[TinyOS]</b></td>

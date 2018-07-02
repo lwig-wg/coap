@@ -5,9 +5,9 @@
 LWIG Working Group                                           M. Kovatsch
 Internet-Draft                                                ETH Zurich
 Intended status: Informational                               O. Bergmann
-Expires: May 3, 2018                                     C. Bormann, Ed.
+Expires: January 3, 2019                                 C. Bormann, Ed.
                                                  Universitaet Bremen TZI
-                                                        October 30, 2017
+                                                           July 02, 2018
 
 
                       CoAP Implementation Guidance
@@ -40,11 +40,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 3, 2018.
+   This Internet-Draft will expire on January 3, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2017 IETF Trust and the persons identified as the
+   Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Kovatsch, et al.           Expires May 3, 2018                  [Page 1]
+Kovatsch, et al.         Expires January 3, 2019                [Page 1]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
 
    publication of this document.  Please review these documents
@@ -73,57 +73,59 @@ Table of Contents
      2.2.  Message Processing  . . . . . . . . . . . . . . . . . . .   5
        2.2.1.  On-the-fly Processing . . . . . . . . . . . . . . . .   5
        2.2.2.  Internal Data Structure . . . . . . . . . . . . . . .   6
-     2.3.  Message ID Usage  . . . . . . . . . . . . . . . . . . . .   6
+     2.3.  Message ID Usage  . . . . . . . . . . . . . . . . . . . .   7
        2.3.1.  Duplicate Rejection . . . . . . . . . . . . . . . . .   7
-       2.3.2.  MID Namespaces  . . . . . . . . . . . . . . . . . . .   7
+       2.3.2.  MID Namespaces  . . . . . . . . . . . . . . . . . . .   8
        2.3.3.  Relaxation on the Server  . . . . . . . . . . . . . .   8
        2.3.4.  Relaxation on the Client  . . . . . . . . . . . . . .   9
-     2.4.  Token Usage . . . . . . . . . . . . . . . . . . . . . . .   9
-       2.4.1.  Tokens for Observe  . . . . . . . . . . . . . . . . .  10
-       2.4.2.  Tokens for Blockwise Transfers  . . . . . . . . . . .  11
-     2.5.  Transmission States . . . . . . . . . . . . . . . . . . .  11
+     2.4.  Token Usage . . . . . . . . . . . . . . . . . . . . . . .  10
+       2.4.1.  Tokens for Observe  . . . . . . . . . . . . . . . . .  11
+       2.4.2.  Tokens for Blockwise Transfers  . . . . . . . . . . .  12
+     2.5.  Transmission States . . . . . . . . . . . . . . . . . . .  12
        2.5.1.  Request/Response Layer  . . . . . . . . . . . . . . .  12
        2.5.2.  Message Layer . . . . . . . . . . . . . . . . . . . .  13
      2.6.  Out-of-band Information . . . . . . . . . . . . . . . . .  14
      2.7.  Programming Model . . . . . . . . . . . . . . . . . . . .  15
-       2.7.1.  Client  . . . . . . . . . . . . . . . . . . . . . . .  15
+       2.7.1.  Client  . . . . . . . . . . . . . . . . . . . . . . .  16
        2.7.2.  Server  . . . . . . . . . . . . . . . . . . . . . . .  16
    3.  Optimizations . . . . . . . . . . . . . . . . . . . . . . . .  17
      3.1.  Message Buffers . . . . . . . . . . . . . . . . . . . . .  17
-     3.2.  Retransmissions . . . . . . . . . . . . . . . . . . . . .  17
+     3.2.  Retransmissions . . . . . . . . . . . . . . . . . . . . .  18
      3.3.  Observable Resources  . . . . . . . . . . . . . . . . . .  18
      3.4.  Blockwise Transfers . . . . . . . . . . . . . . . . . . .  19
-     3.5.  Deduplication with Sequential MIDs  . . . . . . . . . . .  19
-   4.  Alternative Configurations  . . . . . . . . . . . . . . . . .  22
-     4.1.  Transmission Parameters . . . . . . . . . . . . . . . . .  22
-     4.2.  CoAP over IPv4  . . . . . . . . . . . . . . . . . . . . .  23
-   5.  Binding to specific lower-layer APIs  . . . . . . . . . . . .  23
-     5.1.  Berkeley Socket Interface . . . . . . . . . . . . . . . .  23
-       5.1.1.  Responding from the right address . . . . . . . . . .  23
-       5.1.2.  Handling ICMP errors  . . . . . . . . . . . . . . . .  24
-     5.2.  Java  . . . . . . . . . . . . . . . . . . . . . . . . . .  24
-     5.3.  Multicast detection . . . . . . . . . . . . . . . . . . .  25
-     5.4.  DTLS  . . . . . . . . . . . . . . . . . . . . . . . . . .  25
-   6.  CoAP on various transports  . . . . . . . . . . . . . . . . .  25
-     6.1.  CoAP over reliable transports . . . . . . . . . . . . . .  26
+       3.4.1.  Generic Proxying of Block Messages  . . . . . . . . .  19
+       3.4.2.  Atomic Blockwise Operations . . . . . . . . . . . . .  20
+     3.5.  Deduplication with Sequential MIDs  . . . . . . . . . . .  20
+   4.  Alternative Configurations  . . . . . . . . . . . . . . . . .  23
+     4.1.  Transmission Parameters . . . . . . . . . . . . . . . . .  23
+     4.2.  CoAP over IPv4  . . . . . . . . . . . . . . . . . . . . .  24
+   5.  Binding to specific lower-layer APIs  . . . . . . . . . . . .  24
+     5.1.  Berkeley Socket Interface . . . . . . . . . . . . . . . .  24
+       5.1.1.  Responding from the right address . . . . . . . . . .  24
+       5.1.2.  Handling ICMP errors  . . . . . . . . . . . . . . . .  25
+     5.2.  Java  . . . . . . . . . . . . . . . . . . . . . . . . . .  25
+     5.3.  Multicast detection . . . . . . . . . . . . . . . . . . .  26
+     5.4.  DTLS  . . . . . . . . . . . . . . . . . . . . . . . . . .  26
 
 
 
-Kovatsch, et al.           Expires May 3, 2018                  [Page 2]
+Kovatsch, et al.         Expires January 3, 2019                [Page 2]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
 
-     6.2.  Translating between transports  . . . . . . . . . . . . .  26
-       6.2.1.  Transport translation by proxies  . . . . . . . . . .  26
-       6.2.2.  One-to-one Transport translation  . . . . . . . . . .  27
-   7.  IANA considerations . . . . . . . . . . . . . . . . . . . . .  27
-   8.  Security considerations . . . . . . . . . . . . . . . . . . .  27
-   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  27
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  27
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  27
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  28
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  29
+   6.  CoAP on various transports  . . . . . . . . . . . . . . . . .  26
+     6.1.  CoAP over reliable transports . . . . . . . . . . . . . .  27
+     6.2.  Translating between transports  . . . . . . . . . . . . .  27
+       6.2.1.  Transport translation by proxies  . . . . . . . . . .  27
+       6.2.2.  One-to-one Transport translation  . . . . . . . . . .  28
+   7.  IANA considerations . . . . . . . . . . . . . . . . . . . . .  28
+   8.  Security considerations . . . . . . . . . . . . . . . . . . .  28
+   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  28
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  28
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .  28
+     10.2.  Informative References . . . . . . . . . . . . . . . . .  29
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  30
 
 1.  Introduction
 
@@ -159,16 +161,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    demands on the other.  For constrained nodes of Class 1 or even
    Class 2 [RFC7228], the most limiting factors usually are dynamic
    memory needs, static code size, and energy.  Most implementations
-   therefore need to optimize internal buffer usage, omit idle protocol
-   feature, and maximize sleeping cycles.
 
 
 
 
-Kovatsch, et al.           Expires May 3, 2018                  [Page 3]
+Kovatsch, et al.         Expires January 3, 2019                [Page 3]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
+
+   therefore need to optimize internal buffer usage, omit idle protocol
+   features, and maximize sleeping cycles.
 
    The present document gives possible strategies to solve this tradeoff
    for very constrained nodes (i.e., Class 1).  For this, it provides
@@ -215,34 +218,47 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    POST requests to update resources on an unconstrained server whenever
    an event (e.g., a new sensor reading) is triggered.  This requirement
    is solved by the Observe option [RFC7641] of CoAP.  It allows servers
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 4]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    to initiate communication and send push notifications to interested
    client nodes.  This allows a more efficient and also more natural
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 4]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    model for CoAP-based applications, where the information source is an
-   origin server, which can also benefit from caching.
+   origin server, which can also benefit from caching.  Publish-
+   subscribe brokers [I-D.ietf-core-coap-pubsub] may be deployed to act
+   in the server role on behalf of constrained clients.
 
 2.2.  Message Processing
 
    Apart from the required buffers, message processing is symmetric for
-   clients and servers.  First the 4-byte base header has to be parsed
-   and thereby checked if it is a CoAP message.  Since the encoding is
-   very dense, only a wrong version or a datagram size smaller than four
-   bytes identify non-CoAP datagrams.  These need to be silently
-   ignored.  Other message format errors, such as an incomplete datagram
-   or the usage of reserved values, may need to be rejected with a Reset
-   (RST) message (see Section 4.2 and 4.3 of [RFC7252] for details).
-   Next the Token is read based on the TKL field.  For the options
-   following, there are two alternatives: either process them on the fly
-   when an option is accessed or initially parse all values into an
-   internal data structure.
+   clients and servers.  First the base header has to be parsed and
+   thereby checked if it is a valid CoAP message.  For UDP datagrams,
+   the version identifier or a size smaller than four bytes identify
+   non-CoAP data.  These datagrams need to be silently ignored.  Other
+   message format errors, such as an incomplete datagram or the usage of
+   reserved values, may need to be rejected with a Reset (RST) message
+   (see Section 4.2 and 4.3 of [RFC7252] for details).
+
+   As CoAP over TCP has a different base header, the Length field must
+   be parsed to determine the message size.  As this field may have up
+   to five bytes, it may be extend over TCP segment boundaries.  For
+   CoAP over WebSockets the actual message length is given by the
+   WebSocket frame hence the Length field is always zero.
+
+   Next, the token length is read based on the TKL field which is for
+   all transports contained in the four least significant bits of the
+   first byte.  The (possibly empty) Token itself is located immediately
+   after the four-byte base header for UDP, while for TCP and
+   WebSockets, it follows the variable Length field and Code byte.
+
+   For the options following the Token, there are two alternatives:
+   either process them on the fly when an option is accessed or
+   initially parse all values into an internal data structure.
 
 2.2.1.  On-the-fly Processing
 
@@ -258,6 +274,14 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    number itself cannot be used to indicate the number of left-shift
    operations to mask the corresponding bit.  Hence, an implementation-
    specific enum of supported options should be used to mask the present
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 5]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    options of a message in the bitmap.  In addition, the byte index of
    every option (a direct pointer) can be added to a sparse list (e.g.,
    a one-dimensional array) for fast retrieval.
@@ -274,14 +298,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    and all elective options can be masked out in the bit-vector to
    determine if any unknown critical option was present.  If this is the
    case, this information can be used to create a 4.02 response
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 5]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    accordingly.  Note that full processing must only be done up to the
    highest supported option number.  Beyond that, only the least
    significant bit (Critical or Elective) needs to be checked.
@@ -305,7 +321,7 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    (e.g., the Token, which needs to be mirrored), the internal data
    structure facilitates using the buffer for incoming messages also for
    the assembly of outgoing messages - which can be the shared IP buffer
-   provided by the OS.
+   provided by the operating system.
 
    Setting options for outgoing messages is also easier with an internal
    data structure.  Application developers can set options independent
@@ -313,6 +329,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    the delta encoding.  The CoAP encoding is applied in a serialization
    step before sending.  In contrast, assembling outgoing messages with
    on-the-fly processing requires either extensive memmove operations to
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 6]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    insert new options, or restrictions for developers to set options in
    their correct order.
 
@@ -325,18 +350,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    protocol and not for the application data protocol.  Furthermore,
    CoAP implementations usually send CON retransmissions in new DTLS
    records, which are not considered duplicates at the DTLS layer.
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 6]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
 2.3.1.  Duplicate Rejection
 
@@ -372,6 +385,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    the protocol parameters can also be tweaked to achieve higher message
    rates (Section 4.1).
 
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 7]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
 2.3.2.  MID Namespaces
 
    MIDs are assigned under the control of the originator of CON and NON
@@ -383,16 +405,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    MIDs of incoming CONs and NONs and outgoing ACKs and RSTs belong to
    the corresponding remote endpoint.  Figure 1 depicts a scenario where
    mixing the namespaces would cause erroneous filtering.
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 7]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
                     Client              Server
                        |                  |
@@ -430,6 +442,14 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    throughput in the order of hundreds of thousands requests per second
    (which needs about 16 GiB of RAM just for duplicate rejection).
    Deduplication is also heavy for servers on Class 1 devices, as also
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 8]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    piggy-backed responses need to be stored for the case that the ACK
    message is lost.  Hence, a receiver may have good reasons to decide
    not to perform deduplication.  This behavior is possible when the
@@ -443,13 +463,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    representations can minimize the amount of state that needs to be
    kept.
 
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 8]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
 2.3.4.  Relaxation on the Client
 
    Duplicate rejection on the client side can be simplified by choosing
@@ -459,6 +472,39 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    (e.g., the empty Token for optimizations), it requires strict
    duplicate rejection based on MIDs to avoid the scenario outlined in
    Figure 2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019                [Page 9]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
 
                            Client              Server
                               |                  |
@@ -498,14 +544,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    Tokens are chosen by the client and help to identify request/response
    pairs that span several message exchanges (e.g., a separate response,
    which has a new MID).  Servers do not generate Tokens and only mirror
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                  [Page 9]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    what they receive from the clients.  Tokens must be unique within the
    namespace of a client throughout their lifetime.  This begins when
    being assigned to a request and ends when the open request is closed
@@ -516,6 +554,14 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    As already mentioned, a clever assignment of Tokens can help to
    simplify duplicate rejection.  Yet this is also important for coping
    with client crashes.  When a client restarts during an open request
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 10]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    and (unknowingly) re-uses the same Token, it might match the response
    from the previous request to the current one.  Hence, when only the
    Token is used for matching, which is always the case for separate
@@ -555,13 +601,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    should be used when in NoSec mode.  This also solves the problem of
    mismatching notifications after a client crash/restart.
 
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 10]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    When the client wishes to reinforce its interest in a resource, maybe
    not really being sure whether the server has forgotten it or not, the
    Token value allocated to the Observe relationship is used to re-
@@ -570,6 +609,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    with a matching endpoint and token is already present in its list of
    observers for the resource), it will not add a new relationship but
    will replace or update the existing one (Section 4.1 of [RFC7641]).
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 11]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    If not, it will simply establish a new registration which of course
    also uses the Token value.
 
@@ -609,15 +657,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    transition at the message layer and the RR_EVT() action triggers a
    transition at the request/response layer.  The FSMs also use guard
    conditions to distinguish between information that is only available
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 11]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    through the other layer (e.g., whether a request was sent using a CON
    or NON message).
 
@@ -627,6 +666,14 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    CoAP client.  When a request is issued, a "reliable_send" or
    "unreliable_send" is triggered at the message layer.  The WAITING
    state can be left through three transitions: Either the client
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 12]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    cancels the request and triggers cancellation of a CON transmission
    at the message layer, the client receives a failure event from the
    message layer, or a receive event containing a response.
@@ -650,29 +697,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    two busy states in Figure 4, SERVING and SEPARATE.  An incoming
    receive event with a NON request directly triggers the transition to
    the SEPARATE state.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 12]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
         +--------+ <----------RR_EVT(rx)[is NON]---------- +------+
         |SEPARATE|                                         |      |
@@ -698,37 +722,19 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    a TX action to send a message.  For sending and receiving NONs, the
    endpoint remains in its CLOSED state.  When sending a CON, the
    endpoint remains in RELIABLE_TX and keeps retransmitting until the
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 13]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    transmission times out, it receives a matching RST, the request/
    response layer cancels the transmission, or the endpoint receives an
    implicit acknowledgement through a matching NON or CON.  Whenever the
    endpoint receives a CON, it transitions into the ACK_PENDING state,
    which can be left by sending the corresponding ACK.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 13]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
    +-----------+ <-------M_CMD(reliable_send)-----+
    |           |            / TX(con)              \
@@ -772,19 +778,20 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    that might also trigger some of the transitions shown in Section 2.5.
    In particular ICMP messages can inform about unreachable remote
    endpoints or whole network outages.  This information can be used to
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 14]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    pause or cancel ongoing transmission to conserve energy.  Providing
    ICMP information to the CoAP implementation is easier in constrained
    environments, where developers usually can adapt the underlying OS
    (or firmware).  This is not the case on general purpose platforms
    that have full-fledged OSes and make use of high-level programming
    frameworks.
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 14]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
    The most important ICMP messages are host, network, port, or protocol
    unreachable errors.  After appropriate vetting (cf.  [RFC5927]), they
@@ -825,6 +832,16 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    hidden through APIs that resemble classic RESTful Web service
    implementations.
 
+
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 15]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
 2.7.1.  Client
 
    An API for asynchronous requests with response handler functions goes
@@ -834,14 +851,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    control a physical process) or other checkpointing (e.g., starting
    operation only after registration with the resource directory was
    successful).  However, this can also be solved by triggering the next
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 15]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    operation in the response handlers.  Furthermore, as mentioned in
    Section 2.1, it is more like that complex control flow is done by
    more powerful devices and Class 1 devices predominantly run a CoAP
@@ -880,6 +889,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
       that the second handler is called by an irregular event such as a
       button.
 
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 16]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    SEPARATE  Separate responses are usually used when handling a request
       takes more time, e.g., due to a slow sensor or UART-based
       subsystems.  To not fully block the system during this time, the
@@ -890,13 +908,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
       temporarily storing the request information that is required later
       in the result handler to send the response (e.g., source address
       and Token).
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 16]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
 3.  Optimizations
 
@@ -936,6 +947,13 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    described before as long as no additional options are required to
    describe the payload.
 
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 17]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
 3.2.  Retransmissions
 
    CoAP's reliable transmissions require the before-mentioned
@@ -946,14 +964,6 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    lasting resource handlers, the response should be stored for
    retransmission instead of re-dispatching a stored request (which
    would allow for updating the representation).  For Confirmable
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 17]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    notifications, please see Section 2.6, as simply storing the response
    can break the concept of eventual consistency.
 
@@ -992,23 +1002,19 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    are changed when iterating over the observer list (note that
    different token lengths might require realignment).  The advantage
    becomes clear for Confirmable notifications: Instead of one
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 18]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    retransmission buffer per observer, only one buffer and only
    individual retransmission counters and timers in the list entry need
    to be stored.  When the notifications can be sent fast enough, even a
    single timer would suffice.  Furthermore, per-resource buffers
    simplify the update with a new resource state during open deliveries.
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 18]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
 3.4.  Blockwise Transfers
 
@@ -1035,6 +1041,61 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    'sonprintf()').  This functionality is required recurrently and
    should be included in a library.
 
+3.4.1.  Generic Proxying of Block Messages
+
+   Proxies cannot ignore the Block options by specification, because the
+   options Block1 and Block2 are not safe-to-forward.  The rationale
+   behind this design decision is that servers might not be able to
+   distinguish blocks originating from different senders once they have
+   been forwarded by a CoAP proxy.  For atomic operations where all
+   blocks are assembled before actually executing the desired operation,
+   this could lead to inconsistent state on the server side.
+
+   To ensure that this does not happen, a proxy can add the Request-Tag
+   option (see [I-D.ietf-core-echo-request-tag]) containing data that
+   uniquely identifies the originating endpoint in the proxy namespace.
+
+
+
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 19]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
+3.4.2.  Atomic Blockwise Operations
+
+   When an implementation needs to assemble blocks from block-wise
+   transfers, applications need to create an identifier to group
+   messages that belong together.  This "Block Key" at least contains:
+
+   o  The source endpoint (e.g., IP address and port in the UDP case),
+
+   o  the destination endpoint,
+
+   o  the Cache-Key (as updated in [RFC7252]), and
+
+   o  all options that are proxy unsafe and not explicitly described as
+      safe for block-wise assembly.
+
+   The only known options safe for block-wise assembly are the options
+   Block1 and Block2 [RFC7959].
+
+   For the Block1 phase, the request payload is excluded from the
+   identifier generation as it is just being assembled.
+
+   If a message is received that is not the start of a block-wise
+   operation has a Block Key that is not known, and the implementation
+   needs to act atomically on a request body, it must answer 4.08
+   (Request Entity Incomplete).
+
+   Conversely, clients should be aware that requests whose Block Key
+   matches can be interpreted by the server atomically.  This especially
+   affects proxies (see Section 3.4.1).
+
 3.5.  Deduplication with Sequential MIDs
 
    CoAP's duplicate rejection functionality can be straightforwardly
@@ -1054,17 +1115,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    endpoints generate random MIDs.  However, this storage method may
    consume substantial RAM in specific cases, such as:
 
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 20]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    o  many clients are making periodic, non-idempotent requests to a
       single CoAP server;
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 19]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
    o  one client makes periodic requests to a large number of CoAP
       servers and/or requests a large number of resources; where servers
@@ -1111,17 +1170,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    has to take into account that received MIDs of CoAP messages are not
    actually arriving in a sequential fashion, due to lost or reordered
    messages.  Also a peer might reset and lose its MID counter(s) state.
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 21]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    In addition, a peer may have a single Message ID variable used in
    messages to many CoAP endpoints it communicates with, which partly
    breaks sequentiality from the receiving CoAP endpoint's perspective.
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 20]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    Finally, some peers might use a randomly generated MID values
    approach.  Due to these specific conditions, existing sliding window
    bitfield implementations for storing received sequence numbers are
@@ -1167,17 +1226,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    the table is much smaller than the time period after which a peer
    starts to re-use MID values due to wrap-around of a peer's MID
    variable.  One solution is to check that a value t_i in a table row
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 22]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    is still recent enough, before using the row and updating the value
    t_i to current time.  If not recent enough, e.g. older than N
    seconds, a new row with an empty bitfield is created.)  [Clearly,
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 21]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    these optimizations would benefit if the peer were much more
    conservative about re-using MIDs than currently required in the
    protocol specification.]
@@ -1223,17 +1282,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
    Dynamic adjustments will be performed by advanced congestion control
    mechanisms such as [I-D.ietf-core-cocoa].  They are required if the
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 23]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    main cause for message loss is network or endpoint congestion.  Semi-
    dynamic adjustments could be implemented by disseminating new static
    transmission parameters to all nodes when the network configuration
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 22]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    changes (e.g., new nodes are added or long-lasting interference is
    detected).
 
@@ -1280,16 +1339,15 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    bound to the source address from which the TCP connection setup was
    received; no programmer action is needed for this.
 
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 24]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    For stateless UDP sockets, more manual work is required.  Simply
    receiving a packet from a UDP socket bound to INADDR_ANY loses the
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 23]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    information about the destination address; replying to it through the
    same socket will use the default address established by the kernel.
    Two strategies are available:
@@ -1336,16 +1394,16 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    DatagramPacket class does not provide the information to which
    address it was sent.  When replying through the wildcard socket, the
    JVM will pick the default address, which can break the correlation of
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 25]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    messages when the remote endpoint did not send the message to the
    default address.  This is in particular precarious for IPv6 where it
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 24]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
-
    is common to have multiple IP addresses per network interface.  Thus,
    it is recommended to bind to all adresses explicitly and manage the
    destination address of incoming messages within the CoAP
@@ -1387,19 +1445,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
    Recently, the need to carry CoAP over other transports
    [I-D.silverajan-core-coap-alternative-transports] has led to
-   specifications such as CoAP over TLS or TCP
-   [I-D.ietf-core-coap-tcp-tls] or websockets
-   [I-D.savolainen-core-coap-websockets], or even over non-IP transports
-   such as SMS [I-D.becker-core-coap-sms-gprs].  This section discusses
+   specifications such as CoAP over TLS or TCP or WebSockets[RFC8323],
+   or even over non-IP transports such as SMS
+   [I-D.becker-core-coap-sms-gprs].  This section discusses
    considerations that arise when handling these different transports in
    an implementation.
 
 
 
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 25]
+Kovatsch, et al.         Expires January 3, 2019               [Page 26]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
 
 6.1.  CoAP over reliable transports
@@ -1453,9 +1509,9 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 
-Kovatsch, et al.           Expires May 3, 2018                 [Page 26]
+Kovatsch, et al.         Expires January 3, 2019               [Page 27]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
 
 6.2.2.  One-to-one Transport translation
@@ -1492,6 +1548,8 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
    Esko Dijk contributed the sequential MID optimization.  Xuan He
    provided help creating and improved the state machine charts.
+   Christian Amsuess provided input on forwarding block messages by
+   proxies and usage of the Request-Tag option.
 
 10.  References
 
@@ -1500,19 +1558,22 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
    [I-D.ietf-core-cocoa]
               Bormann, C., Betzler, A., Gomez, C., and I. Demirkol,
               "CoAP Simple Congestion Control/Advanced", draft-ietf-
-              core-cocoa-01 (work in progress), March 2017.
+              core-cocoa-03 (work in progress), February 2018.
+
+
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 28]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
 
    [RFC6282]  Hui, J., Ed. and P. Thubert, "Compression Format for IPv6
               Datagrams over IEEE 802.15.4-Based Networks", RFC 6282,
               DOI 10.17487/RFC6282, September 2011,
               <https://www.rfc-editor.org/info/rfc6282>.
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 27]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
-
 
    [RFC6570]  Gregorio, J., Fielding, R., Hadley, M., Nottingham, M.,
               and D. Orchard, "URI Template", RFC 6570,
@@ -1555,30 +1616,31 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
               "Transport of CoAP over SMS", draft-becker-core-coap-sms-
               gprs-06 (work in progress), February 2017.
 
-   [I-D.ietf-core-coap-tcp-tls]
-              Bormann, C., Lemay, S., Tschofenig, H., Hartke, K.,
-              Silverajan, B., and B. Raymor, "CoAP (Constrained
-              Application Protocol) over TCP, TLS, and WebSockets",
-              draft-ietf-core-coap-tcp-tls-09 (work in progress), May
-              2017.
 
 
 
 
-Kovatsch, et al.           Expires May 3, 2018                 [Page 28]
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 29]
 
-Internet-Draft        CoAP Implementation Guidance          October 2017
+Internet-Draft        CoAP Implementation Guidance             July 2018
 
 
-   [I-D.savolainen-core-coap-websockets]
-              Savolainen, T., Hartke, K., and B. Silverajan, "CoAP over
-              WebSockets", draft-savolainen-core-coap-websockets-07
-              (work in progress), June 2016.
+   [I-D.ietf-core-coap-pubsub]
+              Koster, M., Keranen, A., and J. Jimenez, "Publish-
+              Subscribe Broker for the Constrained Application Protocol
+              (CoAP)", draft-ietf-core-coap-pubsub-04 (work in
+              progress), March 2018.
+
+   [I-D.ietf-core-echo-request-tag]
+              Amsuess, C., Mattsson, J., and G. Selander, "Echo and
+              Request-Tag", draft-ietf-core-echo-request-tag-02 (work in
+              progress), June 2018.
 
    [I-D.silverajan-core-coap-alternative-transports]
               Silverajan, B. and T. Savolainen, "CoAP Communication with
               Alternative Transports", draft-silverajan-core-coap-
-              alternative-transports-10 (work in progress), July 2017.
+              alternative-transports-11 (work in progress), March 2018.
 
    [RFC3542]  Stevens, W., Thomas, M., Nordmark, E., and T. Jinmei,
               "Advanced Sockets Application Program Interface (API) for
@@ -1594,6 +1656,12 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
               DOI 10.17487/RFC7228, May 2014,
               <https://www.rfc-editor.org/info/rfc7228>.
 
+   [RFC8323]  Bormann, C., Lemay, S., Tschofenig, H., Hartke, K.,
+              Silverajan, B., and B. Raymor, Ed., "CoAP (Constrained
+              Application Protocol) over TCP, TLS, and WebSockets",
+              RFC 8323, DOI 10.17487/RFC8323, February 2018,
+              <https://www.rfc-editor.org/info/rfc8323>.
+
    [TinyOS]   Levis, P., Madden, S., Polastre, J., Szewczyk, R.,
               Whitehouse, K., Woo, A., Gay, D., Woo, A., Hill, J.,
               Welsh, M., Brewer, E., and D. Culler, "TinyOS: An
@@ -1603,6 +1671,17 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
 Authors' Addresses
 
+
+
+
+
+
+
+Kovatsch, et al.         Expires January 3, 2019               [Page 30]
+
+Internet-Draft        CoAP Implementation Guidance             July 2018
+
+
    Matthias Kovatsch
    ETH Zurich
    Universitaetstrasse 6
@@ -1610,20 +1689,6 @@ Authors' Addresses
    Switzerland
 
    Email: kovatsch@inf.ethz.ch
-
-
-
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 29]
-
-Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
    Olaf Bergmann
@@ -1668,13 +1733,4 @@ Internet-Draft        CoAP Implementation Guidance          October 2017
 
 
 
-
-
-
-
-
-
-
-
-
-Kovatsch, et al.           Expires May 3, 2018                 [Page 30]
+Kovatsch, et al.         Expires January 3, 2019               [Page 31]
