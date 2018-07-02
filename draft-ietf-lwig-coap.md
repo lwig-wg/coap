@@ -2,7 +2,6 @@
 title: CoAP Implementation Guidance
 # abbrev: coap-impl
 docname: draft-ietf-lwig-coap-latest
-date: 2017-10-30
 
 stand_alone: true
 
