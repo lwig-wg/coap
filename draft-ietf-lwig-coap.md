@@ -61,6 +61,7 @@ informative:
   I-D.silverajan-core-coap-alternative-transports: alttrans
   RFC8323: coaptcp
   I-D.becker-core-coap-sms-gprs: coapsms
+  I-D.ietf-core-coap-pubsub: pubsub
   TinyOS:
     title: "TinyOS: An Operating System for Sensor Networks"
     author:
@@ -147,7 +148,7 @@ demands on the other.
 For constrained nodes of Class 1 or even Class 2 {{-terminology}}, the most limiting
 factors usually are dynamic memory needs, static code size, and energy.
 Most implementations therefore need to optimize internal buffer usage,
-omit idle protocol feature, and maximize sleeping cycles.
+omit idle protocol features, and maximize sleeping cycles.
 
 The present document gives possible strategies to solve this tradeoff
 for very constrained nodes (i.e., Class 1).
@@ -201,23 +202,36 @@ option {{-observe}} of CoAP. It allows servers to initiate
 communication and send push notifications to interested client nodes. This
 allows a more efficient and also more natural model for CoAP-based
 applications, where the information source is an origin server, which can also
-benefit from caching.
+benefit from caching. Publish-subscribe brokers {{-pubsub}} may be deployed
+to act in the server role on behalf of constrained clients.
 
 
 ## Message Processing
 
-Apart from the required buffers, message processing is symmetric for clients
-and servers. First the 4-byte base header has to be parsed and thereby checked
-if it is a CoAP message. Since the encoding is very dense, only a wrong
-version or a datagram size smaller than four bytes identify non-CoAP
-datagrams. These need to be silently ignored. Other message format errors,
-such as an incomplete datagram or the usage of reserved values, may need to be
-rejected with a Reset (RST) message (see Section 4.2 and 4.3 of
-{{-coap}} for details).
-Next the Token is read based on the TKL
-field. For the options following, there are two alternatives: either
-process them on the fly when an option is accessed or initially parse
-all values into an internal data structure.
+Apart from the required buffers, message processing is symmetric for
+clients and servers. First the base header has to be parsed and
+thereby checked if it is a valid CoAP message. For UDP datagrams, the
+version identifier or a size smaller than four bytes identify non-CoAP
+data. These datagrams need to be silently ignored. Other message
+format errors, such as an incomplete datagram or the usage of reserved
+values, may need to be rejected with a Reset (RST) message (see
+Section 4.2 and 4.3 of {{-coap}} for details).
+
+As CoAP over TCP has a different base header, the Length field must be
+parsed to determine the message size. As this field may have up to
+five bytes, it may be extend over TCP segment boundaries. For CoAP
+over WebSockets the actual message length is given by the WebSocket
+frame hence the Length field is always zero.
+
+Next, the token length is read based on the TKL field which is for all
+transports contained in the four least significant bits of the first
+byte. The (possibly empty) Token itself is located immediately after
+the four-byte base header for UDP, while for TCP and WebSockets, it
+follows the variable Length field and Code byte.
+
+For the options following the Token, there are two alternatives:
+either process them on the fly when an option is accessed or initially
+parse all values into an internal data structure.
 
 ### On-the-fly Processing
 
@@ -269,7 +283,7 @@ Many of the byte strings (e.g., the URI) are usually not required when generatin
 response. When all important values are copied (e.g., the Token, which needs
 to be mirrored), the internal data structure
 facilitates using the buffer for incoming messages also for the assembly of
-outgoing messages -- which can be the shared IP buffer provided by the OS.
+outgoing messages -- which can be the shared IP buffer provided by the operating system.
 
 Setting options for outgoing messages is also easier with an internal data
 structure. Application developers can set options independent from the option
