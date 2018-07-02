@@ -59,8 +59,7 @@ informative:
   RFC7228: terminology
   RFC3542: ipv6api
   I-D.silverajan-core-coap-alternative-transports: alttrans
-  I-D.savolainen-core-coap-websockets: websock
-  I-D.ietf-core-coap-tcp-tls: coaptcp
+  RFC8323: coaptcp
   I-D.becker-core-coap-sms-gprs: coapsms
   TinyOS:
     title: "TinyOS: An Operating System for Sensor Networks"
@@ -1130,8 +1129,8 @@ placed; in contrast, the UDP endpoint abstraction is based on
 four-tuples of IP addresses and ports.)
 
 Recently, the need to carry CoAP over other transports {{-alttrans}}
-has led to specifications such as CoAP over TLS or TCP {{-coaptcp}} or
-websockets {{-websock}}, or even over non-IP transports such as SMS {{-coapsms}}.
+has led to specifications such as CoAP over TLS or TCP or WebSockets{{-coaptcp}},
+or even over non-IP transports such as SMS {{-coapsms}}.
 This section discusses considerations that arise when handling these
 different transports in an implementation.
 
