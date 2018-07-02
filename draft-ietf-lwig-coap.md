@@ -62,6 +62,7 @@ informative:
   RFC8323: coaptcp
   I-D.becker-core-coap-sms-gprs: coapsms
   I-D.ietf-core-coap-pubsub: pubsub
+  I-D.ietf-core-echo-request-tag: requesttag
   TinyOS:
     title: "TinyOS: An Operating System for Sensor Networks"
     author:
@@ -867,6 +868,47 @@ required that generates slices of a large string with a specific
 offset length (a 'sonprintf()').  This functionality is required
 recurrently and should be included in a library.
 
+### Generic Proxying of Block Messages {#block-proxying}
+
+Proxies cannot ignore the Block options by specification, because the
+options Block1 and Block2 are not safe-to-forward. The rationale
+behind this design decision is that servers might not be able to
+distinguish blocks originating from different senders once they have
+been forwarded by a CoAP proxy. For atomic operations where all blocks
+are assembled before actually executing the desired operation, this
+could lead to inconsistent state on the server side.
+
+To ensure that this does not happen, a proxy can add the Request-Tag
+option (see {{-requesttag}}) containing data that uniquely identifies
+the originating endpoint in the proxy namespace.
+
+### Atomic Blockwise Operations
+
+When an implementation needs to assemble blocks from block-wise
+transfers, applications need to create an identifier to group messages
+that belong together. This "Block Key" at least contains:
+
+* The source endpoint (e.g., IP address and port in the UDP case),
+* the destination endpoint,
+* the Cache-Key (as updated in {{RFC7252}}), and
+* all options that are proxy unsafe and not explicitly described as safe
+  for block-wise assembly.
+
+The only known options safe for block-wise assembly are the options
+Block1 and Block2 {{RFC7959}}.
+
+For the Block1 phase, the request payload is excluded from the
+identifier generation as it is just being assembled.
+
+If a message is received that is not the start of a block-wise
+operation has a Block Key that is not known, and the implementation
+needs to act atomically on a request body, it must answer 4.08
+(Request Entity Incomplete).
+
+Conversely, clients should be aware that requests whose Block Key
+matches can be interpreted by the server atomically. This especially
+affects proxies (see {{block-proxying}}).
+
 ## Deduplication with Sequential MIDs
 
 CoAP's duplicate rejection functionality can be straightforwardly
@@ -1231,7 +1273,10 @@ TBD
 
 # Acknowledgements
 
-Esko Dijk contributed the sequential MID optimization. Xuan He provided help creating and improved the state machine charts.
+Esko Dijk contributed the sequential MID optimization. Xuan He
+provided help creating and improved the state machine
+charts. Christian Amsüss provided input on forwarding block messages
+by proxies and usage of the Request-Tag option.
 
 
 <!--  LocalWords:  CoAP lossy LLN KiB optimizations scalability URIs
